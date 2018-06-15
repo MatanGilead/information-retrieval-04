@@ -5,6 +5,7 @@ public class ParsedDocument {
     private Integer _class_id;
     private String _title;
     private String _body;
+    private Integer _predicted_class;
 
     public ParsedDocument(String doc_id, Integer class_id, String title, String body) {
         this._doc_id = doc_id.trim();
@@ -28,6 +29,14 @@ public class ParsedDocument {
 
     public String getBody() {
         return _body;
+    }
+
+    public void setPredictedClass(Integer prediced_class) {
+        _predicted_class = prediced_class;
+    }
+
+    public Integer getPredictedClass() {
+        return _predicted_class;
     }
 
 }
