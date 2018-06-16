@@ -63,4 +63,11 @@ public class DBModule {
         reader.close();
         return hits;
     }
+
+    public IndexSearcher getSearcher() throws IOException {
+        IndexReader reader = DirectoryReader.open(_index);
+        IndexSearcher searcher = new IndexSearcher(reader);
+        searcher.setSimilarity(new ClassicSimilarity());
+        return searcher;
+    }
 }

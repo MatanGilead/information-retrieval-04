@@ -2,8 +2,8 @@ package App.Model;
 
 import java.util.HashMap;
 import java.util.List;
-
-
+import java.util.Set;
+import java.util.HashSet;
 public class Measurement {
 
 
@@ -20,7 +20,7 @@ public class Measurement {
         for (ParsedDocument doc : docs) {
             Integer true_class = doc.getClassId();
             Integer predicted_class = doc.getPredictedClass();
-            if (true_class == predicted_class) {
+            if (true_class.equals(predicted_class)) {
                 _true_positives.put(true_class, _true_positives.getOrDefault(true_class, 0) + 1);
             } else {
                 _false_negatives.put(true_class, _false_negatives.getOrDefault(true_class, 0) + 1);
@@ -92,14 +92,17 @@ public class Measurement {
 
     public double getMicroAveraging() {
         double result = 0.0;
-
-        for (int i=1; i<14; i++) {
-            Integer true_positives = this.getTP(i);
-            Integer false_positives = this.getFP(i);
-            Integer false_negatives = this.getFN(i);
+        Set<Integer> docsIdSet = new HashSet<>();
+        docsIdSet.addAll(_true_positives.keySet());
+        docsIdSet.addAll(_false_positives.keySet());
+        docsIdSet.addAll(_false_negatives.keySet());
+        for (Integer docId : docsIdSet) {
+            Integer true_positives = this.getTP(docId);
+            Integer false_positives = this.getFP(docId);
+            Integer false_negatives = this.getFN(docId);
             result += this.getF(true_positives, false_positives, false_negatives);
         }
-        return result/14.0;
+        return result/docsIdSet.size();
     }
 
     public double getMacroAveraging() {

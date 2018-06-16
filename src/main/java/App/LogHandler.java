@@ -9,7 +9,7 @@ public class LogHandler {
 
     static{
         PropertyConfigurator.configure("log4j.properties");
-        _logger  = Logger.getLogger("Assignment03");
+        _logger  = Logger.getLogger("Assignment04");
     }
     public static void info(String msg){
         _logger.info(msg);
