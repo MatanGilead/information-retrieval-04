@@ -4,25 +4,14 @@ import App.Model.ParsedDocument;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileDataAccess {
-    public String readFile(String filePath) throws IOException {
-        File file = new File(filePath);
-
-        if (!file.exists())
-            throw new FileNotFoundException();
-
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    }
-
     public List<String> readFileLines(String filePath) throws IOException {
         File file = new File(filePath);
 
@@ -58,33 +47,4 @@ public class FileDataAccess {
         }
         return documents;
     }
-//
-//    public void writeResults(String filePath, Map<String, List<String>> results) throws IOException {
-//        File file = new File(filePath);
-//        file.getParentFile().mkdirs();
-//
-//        if (file.exists())
-//            file.delete();
-//
-//        file.createNewFile();
-//
-//        FileWriter writer = new FileWriter(file.getAbsolutePath());
-//        String output = "";
-//        for (String id : results.keySet()) {
-//            List<Integer> intList = new ArrayList<>();
-//
-//            for(String s : results.get(id)) intList.add(Integer.valueOf(s));
-//            Collections.sort(intList);
-//
-//            List<String> orderedStringList = new ArrayList<>(intList.size());
-//            for (Integer i : intList) {
-//                orderedStringList.add(i.toString());
-//            }
-//
-//            output += id + " " + String.join(" ", orderedStringList) + "\n";
-//        }
-//
-//        writer.write(output);
-//        writer.flush();
-//    }
 }

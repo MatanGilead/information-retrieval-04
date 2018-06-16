@@ -1,6 +1,11 @@
 package App;
 
+import App.Model.ParsedDocument;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -68,6 +73,4 @@ public class ParameterFileParser {
             throw new InvalidPropertiesFormatException("K is not defined well, need to be integer greater than 1.");
         }
     }
-
-
 }

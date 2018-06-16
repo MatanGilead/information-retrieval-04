@@ -22,7 +22,7 @@ public class Main {
         try {
             AssignmentLogic assignmentLogic = new AssignmentLogic(fileDataAccess, parameterFileParser);
             LogHandler.info("Running assignment logic..");
-            assignmentLogic.run(fileName, null);
+            assignmentLogic.run(fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
