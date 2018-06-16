@@ -34,7 +34,6 @@ public class AssignmentLogic {
         writer.close();
     }
 
-
     public Measurement run(String parametersFileName) throws Exception {
         // Get all relevant parameters
         _parameterFileParser.LoadContent(parametersFileName);
