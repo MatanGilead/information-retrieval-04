@@ -22,15 +22,15 @@ public class FileDataAccess {
     }
 
     public List<ParsedDocument> parseTestFile(String filePath) throws IOException {
+        return new ArrayList<>(parseDoc(filePath).values());
+    }
+
+    public Map<String, ParsedDocument> parseTrainFile(String filePath) throws IOException {
         return parseDoc(filePath);
     }
 
-    public List<ParsedDocument> parseTrainFile(String filePath) throws IOException {
-        return parseDoc(filePath);
-    }
-
-    private List<ParsedDocument> parseDoc(String filePath) throws IOException {
-        List<ParsedDocument> documents = new ArrayList<>();
+    private Map<String, ParsedDocument> parseDoc(String filePath) throws IOException {
+        Map<String, ParsedDocument> documents = new HashMap<>();
         Pattern p = Pattern.compile("([^,]+)*,([^,]+),([^,]+),(.+)");
         List<String> lines = readFileLines(filePath);
         for (String line : lines) {
@@ -43,7 +43,7 @@ public class FileDataAccess {
             String title = m.group(3);
             String body = m.group(4);
             ParsedDocument doc = new ParsedDocument(doc_id, class_id, title, body);
-            documents.add(doc);
+            documents.put(doc.getDocId(),doc);
         }
         return documents;
     }

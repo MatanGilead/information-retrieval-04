@@ -40,7 +40,7 @@ public class AssignmentLogic {
 
         LogHandler.info("Parsing train data");
         // Parse the documents
-        List<ParsedDocument> trainData = _fileDataAccess.parseTrainFile(_parameterFileParser.getTrainFile());
+        Map<String, ParsedDocument> trainData = _fileDataAccess.parseTrainFile(_parameterFileParser.getTrainFile());
         LogHandler.info("Parsing test data");
         List<ParsedDocument> testData = _fileDataAccess.parseTestFile(_parameterFileParser.getTestFile());
 
@@ -51,7 +51,7 @@ public class AssignmentLogic {
         Classifier classifier = new Classifier(trainData);
 
         LogHandler.info("Started training");
-        db.indexDocs(trainData);
+        db.indexDocs(trainData.values());
 
         int threads_amount = _parameterFileParser.getThreadsNum();
         LogHandler.info("Started testing");

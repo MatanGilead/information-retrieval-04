@@ -22,6 +22,7 @@ import org.apache.lucene.index.IndexWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DBModule {
@@ -37,7 +38,7 @@ public class DBModule {
     }
 
 
-    public void indexDocs(List<ParsedDocument> parsed_docs) throws  IOException{
+    public void indexDocs(Collection<ParsedDocument> parsed_docs) throws  IOException{
         List<Document> documents = new ArrayList<>();
         for (ParsedDocument parsed_doc: parsed_docs) {
             Document doc = new Document();

@@ -11,26 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 public class Classifier {
-    List<ParsedDocument> _train_data;
+    Map<String, ParsedDocument> _train_data;
 
-    public Classifier(List<ParsedDocument> train_data) {
+    public Classifier(Map<String, ParsedDocument> train_data) {
         _train_data = train_data;
 
-    }
-    private ParsedDocument findDoc(String doc_id, List<ParsedDocument> docs) {
-        for (ParsedDocument doc : docs) {
-            if (doc_id.equals(doc.getDocId())) {
-                return doc;
-            }
-        }
-        return null;
     }
 
     public Integer classify(ScoreDoc[] hits, IndexSearcher searcher) throws IOException {
         HashMap<Integer, Double> class_probability = new HashMap<>();
         for (ScoreDoc hit : hits) {
             Document rawDoc = searcher.doc(hit.doc);
-            ParsedDocument doc = this.findDoc(rawDoc.get("doc_id"), _train_data);
+            ParsedDocument doc = _train_data.getOrDefault(rawDoc.get("doc_id"), null);
             Integer class_id = doc.getClassId();
             class_probability.put(class_id, class_probability.getOrDefault(class_id, 0.0) + hit.score);
         }
