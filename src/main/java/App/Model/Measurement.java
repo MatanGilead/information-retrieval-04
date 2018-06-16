@@ -3,7 +3,7 @@ package App.Model;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
+import java.util.HashSet;
 public class Measurement {
 
 
@@ -92,7 +92,8 @@ public class Measurement {
 
     public double getMicroAveraging() {
         double result = 0.0;
-        Set<Integer> docsIdSet = _true_positives.keySet();
+        Set<Integer> docsIdSet = new HashSet<>();
+        docsIdSet.addAll(_true_positives.keySet());
         docsIdSet.addAll(_false_positives.keySet());
         docsIdSet.addAll(_false_negatives.keySet());
         for (Integer docId : docsIdSet) {

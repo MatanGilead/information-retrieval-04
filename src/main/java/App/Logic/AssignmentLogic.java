@@ -3,13 +3,13 @@ package App.Logic;
 import App.*;
 import App.Model.*;
 import App.Modules.DBModule;
-import org.apache.lucene.search.ScoreDoc;
-
+import App.Modules.QueryManager;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.io.File;
 import java.util.*;
+
 
 public class AssignmentLogic {
     protected FileDataAccess _fileDataAccess;
@@ -34,37 +34,39 @@ public class AssignmentLogic {
         writer.close();
     }
 
-    public void queryList(DBModule db, Classifier classifier, Integer k_value, List<ParsedDocument> docs) throws Exception{
-        ListIterator<ParsedDocument> it = docs.listIterator();
-        while (it.hasNext()) {
-            ParsedDocument doc = it.next();
-            Integer idx = it.nextIndex();
-            ScoreDoc[] hits = db.queryDocument(doc, k_value);
-            Integer class_id = classifier.classify(hits);
-            doc.setPredictedClass(class_id);
-            LogHandler.info(String.format("class for doc %s predicted to be %d, true class is %d:  - %d out of %d", doc.getDocId(), class_id, doc.getClassId(), idx, docs.size()));
-        }
-    }
 
     public void run(String parametersFileName) throws Exception {
         // Get all relevant parameters
         _parameterFileParser.LoadContent(parametersFileName);
 
+        LogHandler.info("Parsing train data");
         // Parse the documents
         List<ParsedDocument> trainData = _fileDataAccess.parseTrainFile(_parameterFileParser.getTrainFile());
+        LogHandler.info("Parsing test data");
         List<ParsedDocument> testData = _fileDataAccess.parseTestFile(_parameterFileParser.getTestFile());
 
         String output_path = _parameterFileParser.getOutputFile();
         Integer k_value = _parameterFileParser.getKValue();
-        Classifier classifier = new Classifier(trainData);
+
         DBModule db = new DBModule();
+        Classifier classifier = new Classifier(trainData);
+
+        LogHandler.info("Started training");
         db.indexDocs(trainData);
-        queryList(db, classifier, k_value, testData);
+
+        int threads_amount = _parameterFileParser.getThreadsNum();
+        LogHandler.info("Started testing");
+        QueryManager queryManager = new QueryManager(db, classifier, threads_amount);
+        queryManager.test(testData, k_value);
+
+        LogHandler.info("Saving results to CSV");
         Collections.sort(testData, Comparator.comparing(ParsedDocument::getDocId));
         exportData(output_path, testData);
+
+        LogHandler.info("Measuring results");
         Measurement measurement = new Measurement(testData);
         Double microF = measurement.getMicroAveraging();
         Double macroF = measurement.getMacroAveraging();
         LogHandler.info(String.format("MicroF=%4.3f, MacroF=%4.3f, K=%d", microF, macroF, k_value));
+        }
     }
-}

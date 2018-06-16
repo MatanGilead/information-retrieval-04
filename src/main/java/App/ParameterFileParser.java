@@ -1,11 +1,6 @@
 package App;
 
-import App.Model.ParsedDocument;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -15,12 +10,14 @@ public class ParameterFileParser {
     private String _trainFile;
     private String _testFile;
     private String _outputFile;
-    private int _k = 0;
+    private int _k;
+    private int _threadsNum = 4;
 
     private final String _trainFilePrefix = "trainFile=";
     private final String _testFilePrefix = "testFile=";
     private final String _outputFilePrefix = "outputFile=";
     private final String _kPrefix = "k=";
+    private final String _threadsPrefix = "threadsNum=";
 
     public ParameterFileParser(FileDataAccess fileDataAccess) {
         _fileDataAccess = fileDataAccess;
@@ -43,6 +40,10 @@ public class ParameterFileParser {
         return _k;
     }
 
+    public int getThreadsNum() {
+        return _threadsNum;
+    }
+
 
     public void LoadContent(String fileName) throws IOException {
         List<String> fileContent = _fileDataAccess.readFileLines(fileName);
@@ -56,6 +57,8 @@ public class ParameterFileParser {
                 _outputFile = line.split(_outputFilePrefix)[1];
             } else if (line.startsWith(_kPrefix)) {
                 _k = Integer.parseInt(line.split(_kPrefix)[1].trim());
+            } else if (line.startsWith(_threadsPrefix)) {
+                _threadsNum = Integer.parseInt(line.split(_threadsPrefix)[1].trim());
             }
         }
 

@@ -14,7 +14,7 @@ public class ParsedDocument {
         this._class_id = class_id;
         this._title = title.trim();
         this._body = body.trim().toLowerCase();
-        LogHandler.info(String.format("Added Document: id=%s, class=%s, title =%s", _doc_id, _class_id, _title));
+        LogHandler.info(String.format("Added Document: id=%s, class=%s, title='%s'", _doc_id, _class_id, _title));
     }
 
     public String getDocId() {
