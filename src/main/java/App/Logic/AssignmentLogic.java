@@ -14,10 +14,19 @@ import java.util.*;
 public class AssignmentLogic {
     protected FileDataAccess _fileDataAccess;
     protected ParameterFileParser _parameterFileParser;
+    protected DBModule _db;
+    protected Classifier _classifier;
 
-    public AssignmentLogic(FileDataAccess fileDataAccess, ParameterFileParser parameterFileParser) {
+    public AssignmentLogic(FileDataAccess fileDataAccess, ParameterFileParser parameterFileParser,
+                           String parametersFileName) throws IOException {
         _fileDataAccess = fileDataAccess;
         _parameterFileParser = parameterFileParser;
+
+        // Get all relevant parameters
+        _parameterFileParser.LoadContent(parametersFileName);
+
+        // Initialize the DB module
+        _db = new DBModule();
     }
 
     private void exportData(String output_file, List<ParsedDocument> docs) throws IOException {
@@ -34,28 +43,29 @@ public class AssignmentLogic {
         writer.close();
     }
 
-    public Measurement run(String parametersFileName) throws Exception {
-        // Get all relevant parameters
-        _parameterFileParser.LoadContent(parametersFileName);
-
+    public void train() throws IOException {
         LogHandler.info("Parsing train data");
         // Parse the documents
         Map<String, ParsedDocument> trainData = _fileDataAccess.parseTrainFile(_parameterFileParser.getTrainFile());
+        _classifier = new Classifier(trainData);
+
+        LogHandler.info("Started training");
+        _db.indexDocs(trainData.values());
+    }
+
+    public Measurement run(Integer overrideKValue) throws Exception {
         LogHandler.info("Parsing test data");
         List<ParsedDocument> testData = _fileDataAccess.parseTestFile(_parameterFileParser.getTestFile());
 
         String output_path = _parameterFileParser.getOutputFile();
         Integer k_value = _parameterFileParser.getKValue();
 
-        DBModule db = new DBModule();
-        Classifier classifier = new Classifier(trainData);
-
-        LogHandler.info("Started training");
-        db.indexDocs(trainData.values());
+        if (overrideKValue != null)
+            k_value = overrideKValue;
 
         int threads_amount = _parameterFileParser.getThreadsNum();
         LogHandler.info("Started testing");
-        QueryManager queryManager = new QueryManager(db, classifier, threads_amount);
+        QueryManager queryManager = new QueryManager(_db, _classifier, threads_amount);
         queryManager.test(testData, k_value);
 
         LogHandler.info("Saving results to CSV");

@@ -15,7 +15,6 @@ public class Classifier {
 
     public Classifier(Map<String, ParsedDocument> train_data) {
         _train_data = train_data;
-
     }
 
     public Integer classify(ScoreDoc[] hits, IndexSearcher searcher) throws IOException {

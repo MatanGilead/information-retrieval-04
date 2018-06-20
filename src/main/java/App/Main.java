@@ -20,9 +20,11 @@ public class Main {
         ParameterFileParser parameterFileParser = new ParameterFileParser(fileDataAccess);
 
         try {
-            AssignmentLogic assignmentLogic = new AssignmentLogic(fileDataAccess, parameterFileParser);
+            AssignmentLogic assignmentLogic =
+                    new AssignmentLogic(fileDataAccess, parameterFileParser, fileName);
             LogHandler.info("Running assignment logic..");
-            assignmentLogic.run(fileName);
+            assignmentLogic.train();
+            assignmentLogic.run(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
