@@ -8,7 +8,7 @@ public class LogHandler {
     private static final Logger _logger;
 
     static{
-        PropertyConfigurator.configure("log4j.properties");
+//        PropertyConfigurator.configure("log4j.properties");
         _logger  = Logger.getLogger("Assignment04");
     }
     public static void info(String msg){
